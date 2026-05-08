@@ -6,25 +6,28 @@ public class CollegeFactory {
     public static List<Department> createDLSLHierarchy() {
         List<Department> university = new ArrayList<>();
 
+
         Department cite = new Department("CITE");
         addSections(cite, "IT1", new String[]{"Programming 1", "Intro to Computing"});
         addSections(cite, "IT2", new String[]{"Discrete Math", "HCI", "Information Management"});
         university.add(cite);
 
+
         Department cbeam = new Department("CBEAM");
-        addSections(cbeam, "ACT1", new String[]{"Accounting 1"});
+        addSections(cbeam, "A1", new String[]{"Accounting 1"});
         university.add(cbeam);
+
+
+        Department con = new Department("CON");
+        addSections(con, "NUR1", new String[]{"Anatomy and Physiology", "Health Assessment"});
+        addSections(con, "NUR2", new String[]{"Pharmacology", "Nursing Care Management"});
+        university.add(con);
+
 
         Department ceas = new Department("CEAS");
         addSections(ceas, "G1", new String[]{"Understanding the Self"});
         university.add(ceas);
 
-        // Hardcoded professor for Infoman
-        for (Section s : cite.getSections()) {
-            if (s.getSectionCode().contains("Information Management")) {
-                s.setAssignedInstructor(new Instructor("INS-001", "Dominador Malasmas"));
-            }
-        }
 
         return university;
     }

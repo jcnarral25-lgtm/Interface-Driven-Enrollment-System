@@ -53,49 +53,78 @@ public class MenuController {
 
     private void handleEnrollment(List<Department> university) {
         System.out.println("\n--- REGISTRATION ---");
-        System.out.print("Full Name: ");
-        String name = sc.nextLine();
-        System.out.print("Student ID: ");
-        String id = sc.nextLine();
-        System.out.print("Program (BSIT/BSCS/BSA/BSN): ");
-        String prog = sc.nextLine().toUpperCase().trim();
+        System.out.print("Full Name: "); String name = sc.nextLine();
+        System.out.print("Student ID: "); String id = sc.nextLine();
+        System.out.print("Year Level: "); String year = sc.nextLine();
 
-        System.out.println("\n--- AVAILABLE SECTIONS ---");
-        for (Department d : university) {
-            for (Section s : d.getSections()) System.out.println("  > " + s.getSectionCode());
+        // Loop for Degree Program
+        String program = "";
+        while (true) {
+            System.out.print("Degree Program (BSIT, BSN, BSA): ");
+            program = sc.nextLine().toUpperCase().trim();
+            if (program.equals("BSIT") || program.equals("BSN") || program.equals("BSA")) break;
+            System.out.println("[ERROR] Invalid Program. Choose BSIT, BSN, or BSA.");
         }
 
-        System.out.print("\nType exact Course/Section: ");
-        String selected = sc.nextLine().trim();
+        // Loop for Section Selection
+        while (true) {
+            System.out.println("\n--- AVAILABLE SECTIONS ---");
+            for (Department d : university) {
+                System.out.println("[" + d.getName() + "]");
+                for (Section s : d.getSections()) System.out.println("  > " + s.getSectionCode());
+            }
 
-        Section target = null;
-        Department targetDept = null;
-        for (Department d : university) {
-            for (Section s : d.getSections()) {
-                if (s.getSectionCode().equalsIgnoreCase(selected)) {
-                    target = s;
-                    targetDept = d;
-                    break;
+            System.out.print("\nType exact Course/Section Code: ");
+            String selected = sc.nextLine().trim();
+
+            Section target = null;
+            Department targetDept = null;
+            for (Department d : university) {
+                for (Section s : d.getSections()) {
+                    if (s.getSectionCode().equalsIgnoreCase(selected)) {
+                        target = s; targetDept = d; break;
+                    }
                 }
             }
-        }
 
-        if (target != null) {
-            // Validation: Only CITE students for CITE courses
-            boolean isCiteStudent = (prog.equals("BSIT") || prog.equals("BSCS"));
-            if (targetDept.getName().equals("CITE") && !isCiteStudent) {
-                System.out.println("[ACCESS DENIED] CITE courses are for BSIT/BSCS only.");
-                return;
+            if (target == null) {
+                System.out.println("[ERROR] Section not found. Try again.");
+                continue;
             }
 
+            // --- STRICT DEPARTMENTAL RESTRICTIONS ---
+            String deptName = targetDept.getName();
+
+            // 1. CITE Restriction (Only BSIT/BSCS allowed)
+            if (deptName.equals("CITE") && !program.equals("BSIT")) {
+                System.out.println("[ACCESS DENIED] " + deptName + " subjects are restricted to BSIT students.");
+                continue;
+            }
+
+            // 2. CON Restriction (Only BSN allowed)
+            if (deptName.equals("CON") && !program.equals("BSN")) {
+                System.out.println("[ACCESS DENIED] " + deptName + " subjects are restricted to BSN students.");
+                continue;
+            }
+
+            // 3. Nursing Students blocked from CBEAM
+            if (program.equals("BSN") && deptName.equals("CBEAM")) {
+                System.out.println("[ACCESS DENIED] Nursing students cannot take CBEAM courses.");
+                continue;
+            }
+
+            // SUCCESS: Valid Enrollment
             System.out.print("Units: ");
-            int units = Integer.parseInt(sc.nextLine());
-            registrar.enrollStudent(id, name, prog, target);
-            tuitionService.recordUnits(id, units);
-            tuitionService.calculateFee(units);
-            System.out.println("[SUCCESS] Enrolled in " + target.getSectionCode());
-        } else {
-            System.out.println("[ERROR] Not found.");
+            try {
+                int units = Integer.parseInt(sc.nextLine());
+                registrar.enrollStudent(id, name, program, target);
+                tuitionService.recordUnits(id, units);
+                tuitionService.calculateFee(units);
+                System.out.println("[SUCCESS] Enrolled in " + target.getSectionCode());
+                break; // Exit the enrollment loop
+            } catch (Exception e) {
+                System.out.println("[ERROR] Invalid unit input. Try again.");
+            }
         }
     }
 
