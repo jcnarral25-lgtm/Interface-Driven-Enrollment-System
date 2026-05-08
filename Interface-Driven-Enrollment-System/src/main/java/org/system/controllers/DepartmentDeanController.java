@@ -15,7 +15,7 @@ public class DepartmentDeanController {
             System.out.println("  Enrolled: " + section.getEnrolledStudents().size() + "/" + section.getMaxCapacity());
 
             for (Student s : section.getEnrolledStudents()) {
-                System.out.println("    >> [" + s.getPersonID() + "] " + s.getPersonName());
+                System.out.println("  >> [" + s.getId() + "] " + s.getName());
             }
         }
     }

@@ -11,8 +11,9 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     public void addStudent(Student student) {
         for (Student s : studentList) {
-            if (s.getPersonID().equals(student.getPersonID())) {
-                System.out.println("[ERROR] ID '" + student.getPersonID() + "' already taken.");
+            // Updated: getPersonID() -> getId()
+            if (s.getId().equals(student.getId())) {
+                System.out.println("[ERROR] ID '" + student.getId() + "' already taken.");
                 return;
             }
         }
@@ -22,8 +23,10 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     public void updateStudent(String id, String newName) {
         for (Student s : studentList) {
-            if (s.getPersonID().equals(id)) {
-                s.setPersonName(newName);
+            // Updated: getPersonID() -> getId()
+            if (s.getId().equals(id)) {
+                // Updated: setPersonName() -> setName()
+                s.setName(newName);
                 return;
             }
         }
@@ -31,9 +34,12 @@ public class StudentServiceImpl implements IStudentService {
 
     @Override
     public void removeStudent(String id) {
-        studentList.removeIf(s -> s.getPersonID().equals(id));
+        // Updated: getPersonID() -> getId()
+        studentList.removeIf(s -> s.getId().equals(id));
     }
 
     @Override
-    public List<Student> getAllStudents() { return studentList; }
+    public List<Student> getAllStudents() {
+        return studentList;
+    }
 }
