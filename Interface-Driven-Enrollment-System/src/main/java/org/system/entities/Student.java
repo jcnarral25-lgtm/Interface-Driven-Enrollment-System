@@ -1,18 +1,28 @@
 package org.system.entities;
 
-public class Student extends Person {
+public class Student {
+    private String id;
+    private String name;
     private String program;
 
     public Student(String id, String name, String program) {
-        super(id, name);
+        this.id = id;
+        this.name = name;
         this.program = program;
     }
 
-    public String getProgram() { return program; }
-    public void setProgram(String program) { this.program = program; }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getId() {
+        return id;
+    }
 
-    @Override
-    public void mainTask() {
-        System.out.println("Student " + getPersonName() + " is attending classes for " + program + ".");
+    public String getName() {
+        return name;
+    }
+
+    public String getProgram() {
+        return program;
     }
 }
