@@ -10,9 +10,14 @@ public class SectionSubController {
     private final Scanner sc = new Scanner(System.in);
     private final SectionServiceImpl sectionService;
 
-    public SectionSubController(List<Department> university) {
-        this.sectionService = new SectionServiceImpl(university);
+
+    public SectionSubController() {
+        this.sectionService = new SectionServiceImpl();
     }
+
+    public void handleSectionManagement(List<Department> university) {
+
+}
 
     public void handleSectionManagement() {
         while (true) {

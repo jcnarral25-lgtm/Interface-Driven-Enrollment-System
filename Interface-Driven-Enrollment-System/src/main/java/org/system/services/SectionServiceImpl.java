@@ -9,8 +9,7 @@ import java.util.List;
 public class SectionServiceImpl implements ISectionService {
     private List<Department> university;
 
-    public SectionServiceImpl(List<Department> university) {
-        this.university = university;
+    public SectionServiceImpl() {
     }
 
     @Override

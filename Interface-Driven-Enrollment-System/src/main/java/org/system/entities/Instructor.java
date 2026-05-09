@@ -1,16 +1,27 @@
 package org.system.entities;
 
-public class Instructor extends Person {
+public class Instructor {
+    private String id;
+    private String name;
+
     public Instructor(String id, String name) {
-        super(id, name);
+        this.id = id;
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
-        return getPersonName();
+        return name;
     }
 
-    @Override
-    public void mainTask() {
-        System.out.println("Teaching assigned sections.");
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -22,7 +22,7 @@ public class InstructorServiceImpl implements IInstructorService {
     @Override
     public Instructor getInstructorDetails(String id) {
         for (Instructor ins : instructorList) {
-            if (ins.getPersonID().equals(id)) return ins;
+            if (ins.getId().equals(id)) return ins;
         }
         return null;
     }

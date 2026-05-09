@@ -8,7 +8,7 @@ public class DepartmentDeanController {
             System.out.println("Section: " + section.getSectionCode());
 
             String prof = (section.getAssignedInstructor() != null)
-                    ? section.getAssignedInstructor().getPersonName()
+                    ? section.getAssignedInstructor().getName()
                     : "TBA";
 
             System.out.println("  Instructor: " + prof);
