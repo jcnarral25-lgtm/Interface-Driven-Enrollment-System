@@ -13,7 +13,7 @@ public class MainApp {
         DepartmentDeanController dean = new DepartmentDeanController();
         List<Department> dlsl = CollegeFactory.createDLSLHierarchy();
 
-        MenuController menu = new MenuController(registrar, dean, tuitionService);
+        MenuController menu = new MenuController(registrar, dean, tuitionService, dlsl);
         menu.start(dlsl);
     }
     }
