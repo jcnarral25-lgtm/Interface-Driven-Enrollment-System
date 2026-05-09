@@ -3,11 +3,16 @@ package org.system.controllers.subcontrollers;
 import org.system.entities.*;
 import org.system.controllers.RegistrarController;
 import org.system.services.TuitionServiceImpl;
+import org.system.services.EnrollmentServiceImpl;
+import org.system.interfaces.IEnrollmentService;
+import org.system.exceptions.SectionFullException;
 import java.util.*;
 
 public class StudentSubController {
     private final Scanner sc = new Scanner(System.in);
     private final RegistrarController registrar;
+
+    private final IEnrollmentService enrollmentService = new EnrollmentServiceImpl();
 
     public StudentSubController(RegistrarController registrar) {
         this.registrar = registrar;
@@ -37,7 +42,6 @@ public class StudentSubController {
     private void performAddEnrollment(List<Department> university, TuitionServiceImpl tuitionService) {
         System.out.println("\n--- NEW ENROLLMENT ---");
 
-        // 1. Validated Name Input
         String name;
         while (true) {
             System.out.print("Full Name (Letters only): ");
@@ -49,7 +53,6 @@ public class StudentSubController {
         System.out.print("Student ID: ");
         String id = sc.nextLine().trim();
 
-        // 2. Validated Program Input
         String program;
         while (true) {
             System.out.print("Program (BSIT, BSN, BSA): ");
@@ -58,7 +61,6 @@ public class StudentSubController {
             System.out.println("[ERROR] Invalid Program.");
         }
 
-        // 3. Search and Selection Loop
         while (true) {
             System.out.print("\nSearch Subject Name (or 'back'): ");
             String search = sc.nextLine().trim();
@@ -81,7 +83,6 @@ public class StudentSubController {
                 continue;
             }
 
-            // Duplicate ID Check for this subject
             boolean exists = false;
             for (Section s : matches) {
                 for (Student st : s.getEnrolledStudents()) {
@@ -93,14 +94,12 @@ public class StudentSubController {
                 continue;
             }
 
-            // Departmental Restrictions
             if ((targetDept.getName().equals("CITE") && !program.equals("BSIT")) ||
                     (targetDept.getName().equals("CON") && !program.equals("BSN"))) {
                 System.out.println("[ACCESS DENIED] This subject is restricted to specific programs.");
                 continue;
             }
 
-            // Display Sections
             System.out.println("\nAvailable Sections:");
             for (Section s : matches) System.out.println(" > " + s.getSectionCode().split(" - ")[0]);
 
@@ -113,13 +112,7 @@ public class StudentSubController {
             }
 
             if (finalSect != null) {
-                // Capacity Check
-                if (finalSect.getEnrolledStudents().size() >= finalSect.getMaxCapacity()) {
-                    System.out.println("[ERROR] Section is full.");
-                    continue;
-                }
 
-                // ASK FOR UNITS (Fixes the 0.00 Balance issue)
                 int units = 0;
                 while (true) {
                     System.out.print("Enter Units for this subject: ");
@@ -132,13 +125,22 @@ public class StudentSubController {
                     }
                 }
 
-                // Finalize Enrollment and Tuition
-                registrar.enrollStudent(id, name, program, finalSect);
-                tuitionService.recordUnits(id, units);
-                tuitionService.calculateFee(units);
+                try {
 
-                System.out.println("[SUCCESS] Enrolled " + name + " in " + finalSect.getSectionCode());
-                break;
+                    Student student = new Student(id, name, program);
+                    enrollmentService.enrollStudentInSection(student, finalSect);
+
+
+                    tuitionService.recordUnits(id, units);
+                    tuitionService.calculateFee(units);
+
+                    System.out.println("[SUCCESS] Enrolled " + name + " in " + finalSect.getSectionCode());
+                    break;
+                } catch (SectionFullException e) {
+                    // Catch the custom exception thrown by the service
+                    System.out.println("\n[REGISTRATION FAILED] " + e.getMessage());
+                    break; // Exit the loop as enrollment failed
+                }
             } else {
                 System.out.println("[ERROR] Invalid section selection.");
             }

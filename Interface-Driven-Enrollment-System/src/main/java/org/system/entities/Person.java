@@ -9,10 +9,12 @@ public abstract class Person {
         this.personName = name;
     }
 
-    public String getPersonID() { return personID; }
-    public String getPersonName() { return personName; }
+    public String getPersonID() {
+        return personID; }
+    public String getPersonName() {
+        return personName; }
 
-    // ADD THIS SETTER TO FIX THE ERROR
+
     public void setPersonName(String personName) {
         this.personName = personName;
     }

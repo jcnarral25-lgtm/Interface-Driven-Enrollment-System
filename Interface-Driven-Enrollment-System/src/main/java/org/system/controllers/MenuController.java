@@ -11,22 +11,17 @@ import java.util.Scanner;
 
 public class MenuController {
     private final Scanner sc = new Scanner(System.in);
-
-
     private final StudentSubController studentSub;
     private final PaymentSubController paymentSub;
     private final InstructorSubController instructorSub;
-
-
     private final DepartmentDeanController dean;
     private final TuitionServiceImpl tuitionService;
 
     public MenuController(RegistrarController reg, DepartmentDeanController dean, TuitionServiceImpl tuition) {
-
         this.studentSub = new StudentSubController(reg);
         this.paymentSub = new PaymentSubController();
+        // This controller will now handle the HR logic
         this.instructorSub = new InstructorSubController();
-
         this.dean = dean;
         this.tuitionService = tuition;
     }
@@ -43,18 +38,16 @@ public class MenuController {
 
             switch (choice) {
                 case "1":
-                    // Delegated to StudentSubController
                     studentSub.handleManagement(university, tuitionService);
                     break;
                 case "2":
-                    // Delegated to PaymentSubController
                     paymentSub.handlePayment(tuitionService);
                     break;
                 case "3":
                     handleHierarchy(university);
                     break;
                 case "4":
-                    // Delegated to InstructorSubController
+
                     instructorSub.handleAssignment(university);
                     break;
                 default:
@@ -77,7 +70,6 @@ public class MenuController {
         while (true) {
             System.out.print("\nEnter Dept (CITE, CEAS, CBEAM, CON) or 'back': ");
             String input = sc.nextLine().toUpperCase().trim();
-
             if (input.equals("BACK")) return;
 
             boolean found = false;
@@ -85,7 +77,7 @@ public class MenuController {
                 if (d.getName().equals(input)) {
                     dean.displayDepartmentStructure(d);
                     found = true;
-                    return; // Return to main menu after viewing
+                    return;
                 }
             }
             if (!found) System.out.println("[ERROR] Department not found.");
