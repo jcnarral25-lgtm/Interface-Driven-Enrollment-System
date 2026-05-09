@@ -1,7 +1,8 @@
 package org.system.interfaces;
 
 public interface ITuitionService {
-    double calculateFee(int units);
+    double calculateFee(int units, boolean isScholar);
     void makePayment(double amount);
-    double getRemainingBalance();
+    double getRemainingBalance(String id);
+    void recordUnits(String id, int units);
 }
