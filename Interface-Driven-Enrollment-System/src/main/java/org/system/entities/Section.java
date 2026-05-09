@@ -7,7 +7,13 @@ public class Section {
     private String sectionCode;
     private int maxCapacity;
     private List<Student> enrolledStudents;
-    private Instructor assignedInstructor; // Added this field
+    private Instructor assignedInstructor;
+
+    private List<Course> courses = new ArrayList<>();
+
+    public List<Course> getCourses() {
+        return courses;
+    }
 
     public Section(String sectionCode, int maxCapacity) {
         this.sectionCode = sectionCode;
@@ -34,5 +40,9 @@ public class Section {
 
     public int getMaxCapacity() {
         return maxCapacity;
+    }
+
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
     }
 }

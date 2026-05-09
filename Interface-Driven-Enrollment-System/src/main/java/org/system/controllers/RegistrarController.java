@@ -9,7 +9,6 @@ import java.util.Scanner;
 public class RegistrarController {
     private final Scanner sc = new Scanner(System.in);
 
-
     private final StudentSubController studentSub;
     private final InstructorSubController instructorSub;
     private final PaymentSubController paymentSub;
@@ -17,13 +16,18 @@ public class RegistrarController {
     private final SectionSubController sectionSub;
     private final CourseSubController courseSub;
 
-    public RegistrarController() {
+    // FIXED: Added List<Department> university to the constructor parameters
+    public RegistrarController(List<Department> university) {
         this.studentSub = new StudentSubController(this);
-        this.instructorSub = new InstructorSubController();
+
+        // FIXED: Passing university to SubControllers that now require it
+        this.instructorSub = new InstructorSubController(university);
+        this.sectionSub = new SectionSubController(university);
+        this.courseSub = new CourseSubController(university);
+
+        // These stay as-is if they don't have a university-based constructor yet
         this.paymentSub = new PaymentSubController();
         this.collegeSub = new CollegeSubController();
-        this.sectionSub = new SectionSubController();
-        this.courseSub = new CourseSubController();
     }
 
     public void showMenu(List<Department> university, TuitionServiceImpl tuitionService) {
@@ -47,14 +51,26 @@ public class RegistrarController {
             }
 
             switch (choice) {
-                case "1": studentSub.handleManagement(university, tuitionService); break;
-                case "2": paymentSub.handlePayment(tuitionService); break;
-                case "3": break;
-                case "4": instructorSub.handleAssignment(university); break;
-                case "5": break;
-                case "6": sectionSub.handleSectionManagement(university); break;
+                case "1":
+                    studentSub.handleManagement(university, tuitionService);
+                    break;
+                case "2":
+                    paymentSub.handlePayment(tuitionService);
+                    break;
+                case "3":
+                    handleHierarchy(university);
+                    break;
+                case "4":
+                    // Ensure method name matches InstructorSubController
+                    instructorSub.handleInstructorManagement(university);
+                    break;
+                case "5":
+                    courseSub.handleCourseManagement(university);
+                    break;
+                case "6":
+                    sectionSub.handleSectionManagement(university);
+                    break;
                 case "7":
-
                     collegeSub.handleDepartmentCRUD(university);
                     break;
                 default:
@@ -62,4 +78,15 @@ public class RegistrarController {
             }
         }
     }
+
+    private void handleHierarchy(List<Department> university) {
+        System.out.println("\n--- INSTITUTIONAL HIERARCHY ---");
+        if (university.isEmpty()) {
+            System.out.println("No departments found.");
+            return;
+        }
+        for (Department dept : university) {
+            System.out.println("Department: " + dept.getName());
+        }
     }
+}

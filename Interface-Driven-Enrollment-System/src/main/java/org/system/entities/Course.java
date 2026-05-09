@@ -13,7 +13,9 @@ public class Course {
         this.program = program;
     }
 
-    public String getCourseID() { return courseID; }
+    public String getCourseCode() {
+        return this.courseID;
+    }
     public void setCourseID(String id) { this.courseID = id; }
 
     public String getCourseName() { return courseName; }

@@ -9,11 +9,13 @@ public class MainApp {
     public static void main(String[] args) {
         EnrollmentServiceImpl enrollmentService = new EnrollmentServiceImpl();
         TuitionServiceImpl tuitionService = new TuitionServiceImpl();
-        RegistrarController registrar = new RegistrarController();
-        DepartmentDeanController dean = new DepartmentDeanController();
         List<Department> dlsl = CollegeFactory.createDLSLHierarchy();
-        
+        RegistrarController registrar = new RegistrarController(dlsl);
+        DepartmentDeanController dean = new DepartmentDeanController();
+
+
         MenuController menu = new MenuController(registrar, dean, tuitionService, dlsl);
         menu.start(dlsl);
     }
-    }
+}
+

@@ -1,15 +1,26 @@
 package org.system.controllers.subcontrollers;
 
 import org.system.entities.Course;
+import org.system.entities.Department;
+import org.system.entities.Section;
 import org.system.interfaces.ICourseService;
 import org.system.services.CourseServiceImpl;
+import org.system.services.SectionServiceImpl;
+
+import java.util.List;
 import java.util.Scanner;
 
 public class CourseSubController {
     private final Scanner sc = new Scanner(System.in);
-    private final ICourseService courseService = new CourseServiceImpl();
+    private final ICourseService courseService;
+    private final SectionServiceImpl sectionService;
 
-    public void handleCourseManagement() {
+    public CourseSubController(List<Department> university) {
+        this.courseService = new CourseServiceImpl(university);
+        this.sectionService = new SectionServiceImpl(university);
+    }
+
+    public void handleCourseManagement(List<Department> university) {
         while (true) {
             System.out.println("\n--- COURSE CATALOG MANAGEMENT ---");
             System.out.println("[A] Add New Course");
@@ -49,9 +60,22 @@ public class CourseSubController {
             }
         }
 
-        Course newCourse = new Course(id, name, units, "");
-        courseService.addCourse(newCourse);
-        System.out.println("[SUCCESS] Course added to catalog.");
+        System.out.print("Assign to Section Code (e.g., IT1A): ");
+        String sectionCode = sc.nextLine().toUpperCase().trim();
+
+        Section section = sectionService.getSectionByCode(sectionCode);
+
+        if (section != null) {
+            // FIXED: Added the 4th argument ("") to match your Course constructor
+            Course newCourse = new Course(id, name, units, "");
+
+            courseService.addCourse(newCourse);
+            section.getCourses().add(newCourse);
+
+            System.out.println("[SUCCESS] Course '" + name + "' added to catalog and Section " + sectionCode + ".");
+        } else {
+            System.out.println("[ERROR] Section not found. Create the section in Section Management first.");
+        }
     }
 
     private void performUpdateCourse() {
@@ -73,11 +97,12 @@ public class CourseSubController {
 
     private void viewCourses() {
         System.out.println("\n--- CURRENT COURSE LIST ---");
-        if (courseService.getAllCourses().isEmpty()) {
+        List<Course> courses = courseService.getAllCourses();
+        if (courses == null || courses.isEmpty()) {
             System.out.println("No courses in catalog.");
         } else {
-            for (Course c : courseService.getAllCourses()) {
-                System.out.println("ID: " + c.getCourseID() + " | Name: " + c.getCourseName() + " | Units: " + c.getUnits());
+            for (Course c : courses) {
+                System.out.println("ID: " + c.getCourseCode() + " | Name: " + c.getCourseName() + " | Units: " + c.getUnits());
             }
         }
     }
