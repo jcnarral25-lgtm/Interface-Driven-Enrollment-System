@@ -9,7 +9,8 @@ import java.util.List;
 public class SectionServiceImpl implements ISectionService {
     private List<Department> university;
 
-    public SectionServiceImpl() {
+    public SectionServiceImpl(List<Department> university) {
+        this.university = university;
     }
 
     @Override
@@ -42,7 +43,16 @@ public class SectionServiceImpl implements ISectionService {
             d.getSections().removeIf(s -> s.getSectionCode().startsWith(sectionCode));
         }
     }
-
+    public Section getSectionByCode(String code) {
+        for (Department d : university) {
+            for (Section s : d.getSections()) {
+                if (s.getSectionCode().equalsIgnoreCase(code)) {
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
     @Override
     public List<Section> getAllSections() {
         List<Section> all = new ArrayList<>();

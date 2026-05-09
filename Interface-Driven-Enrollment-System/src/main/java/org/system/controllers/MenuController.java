@@ -17,12 +17,14 @@ public class MenuController {
     private final CollegeSubController collegeSub;
     private final TuitionServiceImpl tuitionService;
 
-    public MenuController(RegistrarController reg, DepartmentDeanController dean, TuitionServiceImpl tuition, List<Department> university) {
+    public MenuController(RegistrarController reg, DepartmentDeanController dean, TuitionServiceImpl tuition,
+                          List<Department> university) {
+
         this.studentSub = new StudentSubController(reg);
         this.paymentSub = new PaymentSubController();
-        this.instructorSub = new InstructorSubController();
-        this.courseSub = new CourseSubController();
-        this.sectionSub = new SectionSubController();
+        this.instructorSub = new InstructorSubController(university);
+        this.courseSub = new CourseSubController(university);
+        this.sectionSub = new SectionSubController(university);
         this.collegeSub = new CollegeSubController();
         this.tuitionService = tuition;
     }
@@ -31,7 +33,6 @@ public class MenuController {
         while (true) {
             displayMainMenu();
             String choice = sc.nextLine().trim();
-
 
             if (choice.equals("8")) {
                 System.out.println("Exiting System. Goodbye!");
@@ -49,16 +50,16 @@ public class MenuController {
                     handleHierarchy(university);
                     break;
                 case "4":
-                    instructorSub.handleAssignment(university);
+
+                    instructorSub.handleInstructorManagement(university);
                     break;
                 case "5":
-                    courseSub.handleCourseManagement();
+                    courseSub.handleCourseManagement(university); // FIXED: Passing university
                     break;
                 case "6":
                     sectionSub.handleSectionManagement(university);
                     break;
                 case "7":
-                    // This links to the feature you added in image_9e6b48.png
                     collegeSub.handleDepartmentCRUD(university);
                     break;
                 default:
@@ -81,8 +82,11 @@ public class MenuController {
     }
 
     private void handleHierarchy(List<Department> university) {
-
         System.out.println("\n--- INSTITUTIONAL HIERARCHY ---");
+        if (university.isEmpty()) {
+            System.out.println("No departments found.");
+            return;
+        }
         for (Department dept : university) {
             System.out.println("Department: " + dept.getName());
         }
