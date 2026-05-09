@@ -6,40 +6,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentServiceImpl implements IStudentService {
-    private List<Student> studentList = new ArrayList<>();
+    private final List<Student> students = new ArrayList<>();
 
     @Override
     public void addStudent(Student student) {
-        for (Student s : studentList) {
-            // Updated: getPersonID() -> getId()
-            if (s.getId().equals(student.getId())) {
-                System.out.println("[ERROR] ID '" + student.getId() + "' already taken.");
-                return;
-            }
-        }
-        studentList.add(student);
+        students.add(student);
     }
 
     @Override
     public void updateStudent(String id, String newName) {
-        for (Student s : studentList) {
-            // Updated: getPersonID() -> getId()
+        for (Student s : students) {
             if (s.getId().equals(id)) {
-                // Updated: setPersonName() -> setName()
                 s.setName(newName);
-                return;
             }
         }
     }
 
     @Override
     public void removeStudent(String id) {
-        // Updated: getPersonID() -> getId()
-        studentList.removeIf(s -> s.getId().equals(id));
+        students.removeIf(s -> s.getId().equals(id));
     }
 
     @Override
     public List<Student> getAllStudents() {
-        return studentList;
+        return new ArrayList<>(students);
     }
 }

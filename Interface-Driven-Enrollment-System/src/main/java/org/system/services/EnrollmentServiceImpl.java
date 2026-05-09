@@ -8,13 +8,13 @@ public class EnrollmentServiceImpl implements IEnrollmentService {
 
     @Override
     public boolean enrollStudentInSection(Student student, Section section) throws SectionFullException {
-        // Logic: Check if the section is full
+
         if (section.getEnrolledStudents().size() >= section.getMaxCapacity()) {
-            // Throwing the custom exception instead of just printing
+
             throw new SectionFullException("[DENIED] Section " + section.getSectionCode() + " is full!");
         }
 
-        // Add student if not full
+
         section.getEnrolledStudents().add(student);
         return true;
     }

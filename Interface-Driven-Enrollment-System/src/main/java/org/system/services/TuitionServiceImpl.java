@@ -1,31 +1,26 @@
 package org.system.services;
+
 import org.system.interfaces.ITuitionService;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TuitionServiceImpl implements ITuitionService {
-    private double balance = 0;
-    private final double BASE_FEE = 15000.00;
-    private final double PRICE_PER_UNIT = 1207.00;
+    private double balance = 0.0;
+    private static final double BASE_FEE = 5000.0;
+    private static final double PRICE_PER_UNIT = 500.0;
+    private final Map<String, Integer> studentUnits = new HashMap<>();
 
-    // In-memory storage for ID -> Units lookup
-    private Map<String, Integer> studentUnits = new HashMap<>();
-
+    @Override
     public void recordUnits(String id, int units) {
         studentUnits.put(id, units);
     }
 
-    public boolean hasRecord(String id) {
-        return studentUnits.containsKey(id);
-    }
-
-    public int getUnits(String id) {
-        return studentUnits.getOrDefault(id, 0);
-    }
-
     @Override
-    public double calculateFee(int units) {
+    public double calculateFee(int units, boolean isScholar) {
         double fee = BASE_FEE + (units * PRICE_PER_UNIT);
+        if (isScholar) {
+            fee = fee * 0.8;
+        }
         this.balance += fee;
         return fee;
     }
@@ -33,9 +28,10 @@ public class TuitionServiceImpl implements ITuitionService {
     @Override
     public void makePayment(double amount) {
         this.balance -= amount;
-        System.out.println("[PAYMENT] ₱" + String.format("%.2f", amount) + " processed.");
     }
 
     @Override
-    public double getRemainingBalance() { return balance; }
+    public double getRemainingBalance(String id) {
+        return this.balance;
+    }
 }
